@@ -21,7 +21,7 @@
 
 **Bước A — Bật CSDL:** Mở **XAMPP Control Panel**, nhấn **Start** cho **MySQL**. Chỉ cần bật **Apache** của XAMPP khi cần vào phpMyAdmin (`8082`). Tomcat chạy độc lập, không cần Apache XAMPP để phục vụ trang JSP.
 
-**Bước B — Mở VS Code tại thư mục project:**
+**Bước B — Mở VS Code tại thư mục project::**
 
 ```powershell
 cd "C:\Users\ADMIN\Downloads\Httt\Code\LibMan5"
