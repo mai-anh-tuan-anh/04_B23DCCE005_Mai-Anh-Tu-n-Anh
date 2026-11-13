@@ -5,17 +5,24 @@ import java.util.*;
 import model.*;
 
 public class LoanSlipDAO5 extends DAO {
-    public LoanSlipDAO5() { super(); }
+    public LoanSlipDAO5() throws SQLException {
+        super();
+    }
 
     /** Một truy vấn theo danh sách lượt mượn; mỗi phiếu trả về chứa đầy đủ các lượt mượn. */
     public LoanSlip5[] getLoanSlipsByLoans(Loan5[] loans) throws SQLException {
-        if (loans == null || loans.length == 0) return new LoanSlip5[0];
+        if (loans == null || loans.length == 0) {
+            closeConnection();
+            return new LoanSlip5[0];
+        }
         LinkedHashSet<Integer> ids = new LinkedHashSet<>();
         for (Loan5 loan : loans) if (loan != null && loan.getId() > 0) ids.add(loan.getId());
-        if (ids.isEmpty()) return new LoanSlip5[0];
+        if (ids.isEmpty()) {
+            closeConnection();
+            return new LoanSlip5[0];
+        }
         Map<Integer, LoanSlip5> result = new LinkedHashMap<>();
-        con = DatabaseContext.connection();
-        try {
+                try {
             StringJoiner marks = new StringJoiner(",");
             for (int ignored : ids) marks.add("?");
             String sql = "SELECT DISTINCT slip.id AS slipId,slip.loanSlipCode,slip.loanDate," +
@@ -111,12 +118,15 @@ public class LoanSlipDAO5 extends DAO {
                 for (LoanSlip5 slip : result.values())
                     slip.setLoans(bySlip.getOrDefault(slip.getId(), Collections.emptyList()).toArray(new Loan5[0]));
             }
-        } finally { DatabaseContext.release(con); }
+        } finally { closeConnection(); }
         return result.values().toArray(new LoanSlip5[0]);
     }
 
     public LoanSlip5 getLoanSlipByLoan(Loan5 l) throws SQLException {
-        if (l == null || l.getId() <= 0) return null;
+        if (l == null || l.getId() <= 0) {
+            closeConnection();
+            return null;
+        }
         LoanSlip5[] slips = getLoanSlipsByLoans(new Loan5[]{l});
         return slips.length == 0 ? null : slips[0];
     }

@@ -6,14 +6,15 @@ import java.util.*;
 import model.*;
 
 public class DocumentStatisticsDAO5 extends DAO {
-    public DocumentStatisticsDAO5() { super(); }
+    public DocumentStatisticsDAO5() throws SQLException {
+        super();
+    }
 
     public DocumentStatistics5[] getDocumentStatistics(LocalDate startDate, LocalDate endDate) throws SQLException {
         if (startDate == null || endDate == null || startDate.isAfter(endDate))
             throw new IllegalArgumentException("Khoảng thời gian thống kê không hợp lệ");
         Map<Integer, DocumentStatistics5> result = new LinkedHashMap<>();
-        con = DatabaseContext.connection();
-        try {
+                try {
             String sql = "SELECT dt.id, dt.documentTitleCode, dt.documentTitleName, " +
                 "dt.author,dt.publisher,dt.publicationDate,dt.description,dt.shelfLocation, " +
                 "COUNT(DISTINCT loan.id) AS loanAmount " +
@@ -75,7 +76,7 @@ public class DocumentStatisticsDAO5 extends DAO {
                 for (DocumentStatistics5 d : result.values())
                     d.setTitleTypes(byTitle.getOrDefault(d.getId(), Collections.emptyList()).toArray(new TitleType5[0]));
             }
-        } finally { DatabaseContext.release(con); }
+        } finally { closeConnection(); }
         return result.values().toArray(new DocumentStatistics5[0]);
     }
 }

@@ -6,15 +6,16 @@ import java.util.*;
 import model.*;
 
 public class LoanDAO5 extends DAO {
-    public LoanDAO5() { super(); }
+    public LoanDAO5() throws SQLException {
+        super();
+    }
 
     public Loan5[] getLoansByDocumentTitle(DocumentStatistics5 ds,
                                            LocalDate startDate, LocalDate endDate) throws SQLException {
         if (ds == null || ds.getId() <= 0 || startDate == null || endDate == null)
             throw new IllegalArgumentException("Thiếu đầu tài liệu hoặc khoảng thời gian");
         List<Loan5> result = new ArrayList<>();
-        con = DatabaseContext.connection();
-        String sql = "SELECT loan.id AS loanId,loan.returnDate,loan.fine," +
+                String sql = "SELECT loan.id AS loanId,loan.returnDate,loan.fine," +
             "copy.id AS copyId,copy.documentCopyCode,copy.documentCopyStatus,copy.documentCopyCondition," +
             "title.id AS titleId,title.documentTitleCode,title.documentTitleName," +
             "title.author,title.publisher,title.publicationDate,title.description,title.shelfLocation " +
@@ -54,7 +55,7 @@ public class LoanDAO5 extends DAO {
                     result.add(loan);
                 }
             }
-        } finally { DatabaseContext.release(con); }
+        } finally { closeConnection(); }
         return result.toArray(new Loan5[0]);
     }
 }

@@ -6,14 +6,15 @@ import java.util.UUID;
 import model.*;
 
 public class ReaderCardDAO5 extends DAO {
-    public ReaderCardDAO5() { super(); }
+    public ReaderCardDAO5() throws SQLException {
+        super();
+    }
 
     /** ELIGIBLE, READER_ALREADY_HAS_CARD, CCCD_ALREADY_USED. */
     public String checkReaderCardRegistration(Reader5 r, String citizenIdentificationNumber) throws SQLException {
         if (r == null || r.getId() <= 0 || citizenIdentificationNumber == null)
             throw new IllegalArgumentException("Thiếu dữ liệu độc giả hoặc CCCD");
-        con = DatabaseContext.connection();
-        try {
+                try {
             try (PreparedStatement ps = con.prepareStatement(
                     "SELECT id FROM tblReaderCard5 WHERE tblReader5id = ? LIMIT 1")) {
                 ps.setInt(1, r.getId());
@@ -29,15 +30,14 @@ public class ReaderCardDAO5 extends DAO {
                 }
             }
             return "ELIGIBLE";
-        } finally { DatabaseContext.release(con); }
+        } finally { closeConnection(); }
     }
 
     public ReaderCard5 createReaderCard(Reader5 r, ReaderCard5 rc,
                                        ReaderCardType5 rct, ReaderType5 rt) throws SQLException {
         if (r == null || rc == null || rct == null || rt == null)
             throw new IllegalArgumentException("Thiếu thông tin đăng ký");
-        con = DatabaseContext.connection();
-        try {
+                try {
             // Phòng đăng ký lặp; khóa UNIQUE của CSDL là tuyến phòng vệ cuối cùng.
             try (PreparedStatement ps = con.prepareStatement(
                     "SELECT id FROM tblReaderCard5 WHERE tblReader5id=? OR citizenIdentificationNumber=? LIMIT 1")) {
@@ -83,6 +83,6 @@ public class ReaderCardDAO5 extends DAO {
             rc.setReaderCardType(rct);
             rc.setReaderType(rt);
             return rc;
-        } finally { DatabaseContext.release(con); }
+        } finally { closeConnection(); }
     }
 }

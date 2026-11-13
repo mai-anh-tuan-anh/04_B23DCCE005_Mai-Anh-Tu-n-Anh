@@ -1,7 +1,10 @@
 <%@ include file="/WEB-INF/jspf/common.jspf" %>
 <%
 Reader5 reader=(Reader5)session.getAttribute("reader5");
-if(reader==null){response.sendRedirect(request.getContextPath()+"/view/Member/gddangnhap.jsp");return;}
+if (reader == null) {
+    response.sendRedirect(request.getContextPath() + "/view/Member/UILogin.jsp");
+    return;
+}
 request.setCharacterEncoding("UTF-8");
 String base=request.getContextPath();
 String error=null;
@@ -83,29 +86,101 @@ ReaderType5 selectedReader=(ReaderType5)session.getAttribute("pendingReaderType5
 int selectedCardId=intValue(request.getParameter("readerCardType"),selectedCard==null?2:selectedCard.getId());
 int selectedReaderId=intValue(request.getParameter("readerType"),selectedReader==null?1:selectedReader.getId());
 %>
-<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ĐĂNG KÝ THẺ ĐỘC GIẢ</title><link rel="stylesheet" href="<%=base%>/assets/css/style.css"></head><body>
-<main class="page"><h1 class="page-title">ĐĂNG KÝ THẺ ĐỘC GIẢ</h1>
-<% if(error!=null){ %><div class="notification error"><%=h(error)%></div><% } %>
-<form action="UIReaderCardRegistration5.jsp" method="post" accept-charset="UTF-8" class="registration-form">
-<div class="section-heading">Thông tin thẻ</div>
-<div class="form-grid">
-<div class="field"><label for="readerCardType">Loại thẻ <span class="required">(*)</span></label>
-<select id="readerCardType" name="readerCardType" required>
-<%for(ReaderCardType5 type:types){%><option value="<%=type.getId()%>" <%=type.getId()==selectedCardId?"selected":""%>><%=h(type.getReaderCardTypeName())%> – <%=h(fmtMoney(type.getRegistrationFee()))%> – hạn mượn <%=type.getLoanDuration()%> ngày – thẻ <%=type.getValidityPeriod()%> tháng – tối đa <%=type.getMaxBorrowedCopies()%> quyển</option><%}%>
-</select></div>
-<div class="field"><label for="readerType">Loại bạn đọc <span class="required">(*)</span></label>
-<select id="readerType" name="readerType" required><%for(ReaderType5 t:readerTypes){%><option value="<%=t.getId()%>" <%=t.getId()==selectedReaderId?"selected":""%>><%=h(t.getReaderTypeName())%></option><%}%></select></div>
-<div class="field"><label for="fullName">Họ tên <span class="required">(*)</span></label><input id="fullName" name="fullName" maxlength="150" placeholder="Họ và tên" required value="<%=h(pending==null?"":pending.getFullName())%>"></div>
-<div class="field"><label>Giới tính <span class="required">(*)</span></label><div class="radio-row"><% for(String sex:new String[]{"Nam","Nữ","Khác"}){ %><label><input type="radio" name="gender" value="<%=sex%>" <%=pending!=null&&sex.equals(pending.getGender())?"checked":""%> required> <%=sex%></label><% } %></div></div>
-<div class="field"><label for="dateOfBirth">Ngày sinh <span class="required">(*)</span></label><input id="dateOfBirth" name="dateOfBirth" type="date" required max="<%=LocalDate.now().minusDays(1)%>" value="<%=pending==null?"":dateInput(pending.getDateOfBirth())%>"></div>
-<div class="field"><label for="citizenIdentificationNumber">CCCD <span class="required">(*)</span></label><input id="citizenIdentificationNumber" name="citizenIdentificationNumber" inputmode="numeric" pattern="[0-9]{12}" maxlength="12" placeholder="12 chữ số" required value="<%=h(pending==null?"":pending.getCitizenIdentificationNumber())%>"></div>
-<div class="field"><label for="email">Email <span class="required">(*)</span></label><input id="email" name="email" type="email" maxlength="150" placeholder="abc@gmail.com" required value="<%=h(pending==null?"":pending.getEmail())%>"></div>
-<div class="field"><label for="phoneNumber">Số điện thoại <span class="required">(*)</span></label><input id="phoneNumber" name="phoneNumber" inputmode="numeric" pattern="0[0-9]{9}" maxlength="10" placeholder="VD: 0123456789" required value="<%=h(pending==null?"":pending.getPhoneNumber())%>"></div>
-<div class="field field-full"><label for="address">Địa chỉ <span class="required">(*)</span></label><input id="address" name="address" maxlength="255" placeholder="Số nhà, đường, xã, huyện, tỉnh" required value="<%=h(pending==null?"":pending.getAddress())%>"></div>
-<div class="field field-full"><label for="cardDeliveryMethod">Nơi nhận thẻ</label><select id="cardDeliveryMethod" name="cardDeliveryMethod">
-<option value="Nhận tại thư viện" <%=pending!=null&&"Nhận tại thư viện".equals(pending.getCardDeliveryMethod())?"selected":""%>>Nhận tại thư viện</option>
-<option value="Nhận tại nhà" <%=pending!=null&&"Nhận tại nhà".equals(pending.getCardDeliveryMethod())?"selected":""%>>Nhận tại nhà (phí vận chuyển thu riêng)</option>
-</select></div>
-</div>
-<div class="actions"><button class="btn" id="btnReset" name="action" value="reset" type="submit" formnovalidate>Nhập lại</button><a class="btn" id="btnBack" href="UIReader5.jsp">Quay lại</a><button class="btn btn-primary" id="btnRegister" name="action" value="register" type="submit">Đăng ký</button></div>
-</form></main></body></html>
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>ĐĂNG KÝ THẺ ĐỘC GIẢ</title>
+        <link rel="stylesheet" href="<%=base%>/assets/css/style.css">
+    </head>
+    <body>
+        <main class="page">
+            <h1 class="page-title">ĐĂNG KÝ THẺ ĐỘC GIẢ</h1>
+            <% if(error!=null){ %>
+            <div class="notification error">
+                <%=h(error)%>
+            </div>
+            <% } %>
+            <form action="UIReaderCardRegistration5.jsp" method="post" accept-charset="UTF-8" class="registration-form">
+                <div class="section-heading">Thông tin thẻ</div>
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="readerCardType">Loại thẻ <span class="required">(*)</span>
+                        </label>
+                        <select id="readerCardType" name="readerCardType" required>
+                            <%for(ReaderCardType5 type:types){%>
+                            <option value="<%=type.getId()%>" <%=type.getId()==selectedCardId?"selected":""%>>
+                                <%=h(type.getReaderCardTypeName())%> – <%=h(fmtMoney(type.getRegistrationFee()))%> – hạn mượn <%=type.getLoanDuration()%> ngày – thẻ <%=type.getValidityPeriod()%> tháng – tối đa <%=type.getMaxBorrowedCopies()%> quyển</option>
+                                <%}%>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="readerType">Loại bạn đọc <span class="required">(*)</span>
+                            </label>
+                            <select id="readerType" name="readerType" required>
+                                <%for(ReaderType5 t:readerTypes){%>
+                                <option value="<%=t.getId()%>" <%=t.getId()==selectedReaderId?"selected":""%>>
+                                    <%=h(t.getReaderTypeName())%>
+                                </option>
+                                <%}%>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="fullName">Họ tên <span class="required">(*)</span>
+                            </label>
+                            <input id="fullName" name="fullName" maxlength="150" placeholder="Họ và tên" required value="<%=h(pending==null?"":pending.getFullName())%>">
+                        </div>
+                        <div class="field">
+                            <label>Giới tính <span class="required">(*)</span>
+                            </label>
+                            <div class="radio-row">
+                                <% for(String sex:new String[]{"Nam","Nữ","Khác"}){ %>
+                                <label>
+                                    <input type="radio" name="gender" value="<%=sex%>" <%=pending!=null&&sex.equals(pending.getGender())?"checked":""%> required> <%=sex%>
+                                </label>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="dateOfBirth">Ngày sinh <span class="required">(*)</span>
+                            </label>
+                            <input id="dateOfBirth" name="dateOfBirth" type="date" required max="<%=LocalDate.now().minusDays(1)%>" value="<%=pending==null?"":dateInput(pending.getDateOfBirth())%>">
+                        </div>
+                        <div class="field">
+                            <label for="citizenIdentificationNumber">CCCD <span class="required">(*)</span>
+                            </label>
+                            <input id="citizenIdentificationNumber" name="citizenIdentificationNumber" inputmode="numeric" pattern="[0-9]{12}" maxlength="12" placeholder="12 chữ số" required value="<%=h(pending==null?"":pending.getCitizenIdentificationNumber())%>">
+                        </div>
+                        <div class="field">
+                            <label for="email">Email <span class="required">(*)</span>
+                            </label>
+                            <input id="email" name="email" type="email" maxlength="150" placeholder="abc@gmail.com" required value="<%=h(pending==null?"":pending.getEmail())%>">
+                        </div>
+                        <div class="field">
+                            <label for="phoneNumber">Số điện thoại <span class="required">(*)</span>
+                            </label>
+                            <input id="phoneNumber" name="phoneNumber" inputmode="numeric" pattern="0[0-9]{9}" maxlength="10" placeholder="VD: 0123456789" required value="<%=h(pending==null?"":pending.getPhoneNumber())%>">
+                        </div>
+                        <div class="field field-full">
+                            <label for="address">Địa chỉ <span class="required">(*)</span>
+                            </label>
+                            <input id="address" name="address" maxlength="255" placeholder="Số nhà, đường, xã, huyện, tỉnh" required value="<%=h(pending==null?"":pending.getAddress())%>">
+                        </div>
+                        <div class="field field-full">
+                            <label for="cardDeliveryMethod">Nơi nhận thẻ</label>
+                            <select id="cardDeliveryMethod" name="cardDeliveryMethod">
+                                <option value="Nhận tại thư viện" <%=pending!=null&&"Nhận tại thư viện".equals(pending.getCardDeliveryMethod())?"selected":""%>>Nhận tại thư viện</option>
+                                <option value="Nhận tại nhà" <%=pending!=null&&"Nhận tại nhà".equals(pending.getCardDeliveryMethod())?"selected":""%>>Nhận tại nhà (phí vận chuyển thu riêng)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn" id="btnReset" name="action" value="reset" type="submit" formnovalidate>Nhập lại</button>
+                        <a class="btn" id="btnBack" href="UIReader5.jsp">Quay lại</a>
+                        <button class="btn btn-primary" id="btnRegister" name="action" value="register" type="submit">Đăng ký</button>
+                    </div>
+                </form>
+            </main>
+        </body>
+    </html>

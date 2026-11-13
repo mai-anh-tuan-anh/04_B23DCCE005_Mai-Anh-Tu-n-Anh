@@ -1,7 +1,10 @@
 <%@ include file="/WEB-INF/jspf/common.jspf" %>
 <%
 ManagementStaff5 manager=(ManagementStaff5)session.getAttribute("managementStaff5");
-if(manager==null){response.sendRedirect(request.getContextPath()+"/view/Member/gddangnhap.jsp");return;}
+if (manager == null) {
+    response.sendRedirect(request.getContextPath() + "/view/Member/UILogin.jsp");
+    return;
+}
 request.setCharacterEncoding("UTF-8");
 String base=request.getContextPath();
 DocumentStatistics5[] stats=(DocumentStatistics5[])session.getAttribute("statsList5");
@@ -66,31 +69,111 @@ session.setAttribute("loanFiltered5",filtered);
 int first=(pageNum-1)*15;
 int until=Math.min(filtered.size(),first+15);
 %>
-<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DANH SÁCH LƯỢT MƯỢN CỦA ĐẦU TÀI LIỆU</title><link rel="stylesheet" href="<%=base%>/assets/css/style.css"></head><body>
-<main class="page"><h1 class="page-title">DANH SÁCH LƯỢT MƯỢN CỦA ĐẦU TÀI LIỆU</h1>
-<%if(notice!=null){%><div class="notification error"><%=h(notice)%></div><%}%>
-<div class="meta-grid">
-<div><strong>Mã đầu tài liệu:</strong> <%=h(title.getDocumentTitleCode())%></div>
-<div><strong>Tên đầu tài liệu:</strong> <%=h(title.getDocumentTitleName())%></div>
-<div><strong>Loại tài liệu:</strong> <%=h(fmtTypes(title))%></div>
-<div><strong>Vị trí kệ:</strong> <%=h(title.getShelfLocation())%></div>
-</div>
-<p class="total">Tổng lượt mượn trong khoảng thời gian: <strong><%=title.getLoanAmount()%></strong> &nbsp; (<%=fmtDate(begin)%> – <%=fmtDate(end)%>)</p>
-<form method="post" action="UIDocumentCopyLoanList5.jsp" class="search-row"><input type="hidden" name="action" value="search">
-<label for="searchKeyword">Tìm mã quyển hoặc tên độc giả</label>
-<input id="searchKeyword" name="searchKeyword" placeholder="B123456789 / Nguyễn Văn A" value="<%=h(keyword)%>">
-<button type="submit" id="btnSearch" class="btn">Tìm kiếm</button></form>
-<div class="section-heading">Danh sách lượt mượn</div>
-<div class="table-wrap"><table id="tblLoans"><thead><tr><th>STT</th><th>Mã quyển</th><th>Ngày mượn</th><th>Hạn trả</th><th>Ngày trả</th><th>Tên độc giả</th></tr></thead><tbody>
-<%for(int i=first;i<until;i++){Loan5 loan=filtered.get(i);LoanSlip5 slip=slipByLoan.get(loan.getId());%>
-<tr><td><%=i+1%></td><td><a href="UILoanSlipDetail5.jsp?loanId=<%=loan.getId()%>"><%=h(loan.getDocumentCopy().getDocumentCopyCode())%></a></td><td><%=fmtDate(slip.getLoanDate())%></td><td><%=fmtDate(slip.getDueDate())%></td><td><%=fmtDate(loan.getReturnDate())%></td><td><%=h(slip.getReader().getFullName())%></td></tr>
-<%}%>
-<%if(filtered.isEmpty()){%><tr><td colspan="6" class="empty-table">Không tìm thấy lượt mượn phù hợp.</td></tr><%}%>
-</tbody></table></div>
-<div class="pagination">Trang <%=pageNum%>/<%=pages%> &nbsp;
-<%if(pageNum>1){%><a href="UIDocumentCopyLoanList5.jsp?action=page&amp;page=<%=pageNum-1%>">&lt; Trước</a><%}else{%><span>&lt; Trước</span><%}%>
-<span class="page-index"><%=pageNum%></span>
-<%if(pageNum<pages){%><a href="UIDocumentCopyLoanList5.jsp?action=page&amp;page=<%=pageNum+1%>">Sau &gt;</a><%}else{%><span>Sau &gt;</span><%}%>
-<span>(Tối đa 15 lượt mượn/trang)</span></div>
-<div class="actions"><a id="btnBack" class="btn" href="UIDocumentStatistics5.jsp">Quay lại</a><a id="btnHome" class="btn btn-primary" href="UIManagementStaff5.jsp">Về giao diện chính</a></div>
-</main></body></html>
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>DANH SÁCH LƯỢT MƯỢN CỦA ĐẦU TÀI LIỆU</title>
+        <link rel="stylesheet" href="<%=base%>/assets/css/style.css">
+    </head>
+    <body>
+        <main class="page">
+            <h1 class="page-title">DANH SÁCH LƯỢT MƯỢN CỦA ĐẦU TÀI LIỆU</h1>
+            <%if(notice!=null){%>
+            <div class="notification error">
+                <%=h(notice)%>
+            </div>
+            <%}%>
+            <div class="meta-grid">
+                <div>
+                    <strong>Mã đầu tài liệu:</strong> <%=h(title.getDocumentTitleCode())%>
+                </div>
+                <div>
+                    <strong>Tên đầu tài liệu:</strong> <%=h(title.getDocumentTitleName())%>
+                </div>
+                <div>
+                    <strong>Loại tài liệu:</strong> <%=h(fmtTypes(title))%>
+                </div>
+                <div>
+                    <strong>Vị trí kệ:</strong> <%=h(title.getShelfLocation())%>
+                </div>
+            </div>
+            <p class="total">Tổng lượt mượn trong khoảng thời gian: <strong>
+                <%=title.getLoanAmount()%>
+            </strong> &nbsp; (<%=fmtDate(begin)%> – <%=fmtDate(end)%>)</p>
+            <form method="post" action="UIDocumentCopyLoanList5.jsp" class="search-row">
+                <input type="hidden" name="action" value="search">
+                <label for="searchKeyword">Tìm mã quyển hoặc tên độc giả</label>
+                <input id="searchKeyword" name="searchKeyword" placeholder="B123456789 / Nguyễn Văn A" value="<%=h(keyword)%>">
+                <button type="submit" id="btnSearch" class="btn">Tìm kiếm</button>
+            </form>
+            <div class="section-heading">Danh sách lượt mượn</div>
+            <div class="table-wrap">
+                <table id="tblLoans">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã quyển</th>
+                            <th>Ngày mượn</th>
+                            <th>Hạn trả</th>
+                            <th>Ngày trả</th>
+                            <th>Tên độc giả - Mã độc giả</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%for(int i=first;i<until;i++){Loan5 loan=filtered.get(i);LoanSlip5 slip=slipByLoan.get(loan.getId());%>
+                        <tr>
+                            <td>
+                                <%=i+1%>
+                            </td>
+                            <td>
+                                <a href="UILoanSlipDetail5.jsp?loanId=<%=loan.getId()%>">
+                                    <%=h(loan.getDocumentCopy().getDocumentCopyCode())%>
+                                </a>
+                            </td>
+                            <td>
+                                <%=fmtDate(slip.getLoanDate())%>
+                            </td>
+                            <td>
+                                <%=fmtDate(slip.getDueDate())%>
+                            </td>
+                            <td>
+                                <%=fmtDate(loan.getReturnDate())%>
+                            </td>
+                            <td>
+                                <%=h(slip.getReader().getFullName())%> - <%=h(slip.getReader().getReaderCode())%>
+                            </td>
+                        </tr>
+                        <%}%>
+                        <%if(filtered.isEmpty()){%>
+                        <tr>
+                            <td colspan="6" class="empty-table">Không tìm thấy lượt mượn phù hợp.</td>
+                        </tr>
+                        <%}%>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination">Trang <%=pageNum%>/<%=pages%> &nbsp;
+                <%if(pageNum>1){%>
+                <a href="UIDocumentCopyLoanList5.jsp?action=page&amp;page=<%=pageNum-1%>">&lt; Trước</a>
+                <%}else{%>
+                <span>&lt; Trước</span>
+                <%}%>
+                <span class="page-index">
+                    <%=pageNum%>
+                </span>
+                <%if(pageNum<pages){%>
+                <a href="UIDocumentCopyLoanList5.jsp?action=page&amp;page=<%=pageNum+1%>">Sau &gt;</a>
+                <%}else{%>
+                <span>Sau &gt;</span>
+                <%}%>
+                <span>(Tối đa 15 lượt mượn/trang)</span>
+            </div>
+            <div class="actions">
+                <a id="btnBack" class="btn" href="UIDocumentStatistics5.jsp">Quay lại</a>
+                <a id="btnHome" class="btn btn-primary" href="UIManagementStaff5.jsp">Về giao diện chính</a>
+            </div>
+        </main>
+    </body>
+</html>

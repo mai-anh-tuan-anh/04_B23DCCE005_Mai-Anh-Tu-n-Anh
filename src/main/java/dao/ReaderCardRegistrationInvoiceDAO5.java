@@ -7,14 +7,15 @@ import java.util.UUID;
 import model.*;
 
 public class ReaderCardRegistrationInvoiceDAO5 extends DAO {
-    public ReaderCardRegistrationInvoiceDAO5() { super(); }
+    public ReaderCardRegistrationInvoiceDAO5() throws SQLException {
+        super();
+    }
 
     public ReaderCardRegistrationInvoice5 createReaderCardRegistrationInvoice(
             ReaderCard5 rc, BigDecimal paidAmount) throws SQLException {
         if (rc == null || rc.getId() <= 0 || paidAmount == null)
             throw new IllegalArgumentException("Thẻ phải được tạo trước hóa đơn");
-        con = DatabaseContext.connection();
-        try {
+                try {
             ReaderCardRegistrationInvoice5 invoice = new ReaderCardRegistrationInvoice5();
             invoice.setInvoiceCode("INV" + UUID.randomUUID().toString().replace("-", "")
                 .substring(0, 14).toUpperCase());
@@ -36,6 +37,6 @@ public class ReaderCardRegistrationInvoiceDAO5 extends DAO {
             }
             rc.setRegistrationInvoice(invoice);
             return invoice;
-        } finally { DatabaseContext.release(con); }
+        } finally { closeConnection(); }
     }
 }
