@@ -68,7 +68,7 @@
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <title>UIReaderCardPayment5.jsp</title>
         <%if(error==null){%>
-        <meta http-equiv="refresh" content="3;url=UIReaderCardPayment5.jsp?complete=1">
+        <meta http-equiv="refresh" content="6;url=UIReaderCardPayment5.jsp?complete=1">
         <%}%>
         <link rel="stylesheet" href="<%=base%>/assets/css/style.css">
     </head>

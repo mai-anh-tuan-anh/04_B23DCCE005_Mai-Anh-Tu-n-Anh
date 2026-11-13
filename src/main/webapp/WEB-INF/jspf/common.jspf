@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="model.*,dao.*,java.util.*,java.time.*,java.time.format.*,java.math.*,java.sql.*,java.net.URLEncoder" %>
 <%!
     // Tiện ích trình bày JSP, không truy vấn CSDL và không phải DAO.

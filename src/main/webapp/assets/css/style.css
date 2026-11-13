@@ -210,14 +210,18 @@ input[type="checkbox"] {
 }
 .qr-image {
   display: block;
-  width: 220px;
-  height: 220px;
+
+  width: min(48vw, 600px);
+  height: auto;
   max-width: 100%;
+
   margin: 0 auto 16px;
   image-rendering: pixelated;
+
   border: 1px solid #bbb;
   padding: 9px;
   background: #fff;
+  box-sizing: border-box;
 }
 .payment-amount {
   font-size: 18px;
@@ -490,4 +494,13 @@ td:first-child {
   .page {
     margin-top: 10px;
   }
+}
+/* Phóng to mã QR trên giao diện thanh toán */
+#QR.qr-image {
+  width: min(48vw, 520px, 60vh);
+  height: auto;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  box-sizing: border-box;
 }
