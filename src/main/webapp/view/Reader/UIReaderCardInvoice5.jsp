@@ -1,3 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
 <%@ include file="/WEB-INF/jspf/common.jspf" %>
 <%
 Reader5 reader=(Reader5)session.getAttribute("reader5");
@@ -15,7 +16,7 @@ String base=request.getContextPath();
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>CHI TIẾT HÓA ĐƠN ĐĂNG KÝ THẺ</title>
+        <title>UIReaderCardInvoice5.jsp</title>
         <link rel="stylesheet" href="<%=base%>/assets/css/style.css">
     </head>
     <body>

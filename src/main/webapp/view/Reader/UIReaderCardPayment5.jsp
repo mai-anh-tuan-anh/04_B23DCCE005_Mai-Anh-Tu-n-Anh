@@ -1,3 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
 <%@ include file="/WEB-INF/jspf/common.jspf" %>
 <%
 
@@ -65,7 +66,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>THANH TOÁN PHÍ ĐĂNG KÝ THẺ</title>
+        <title>UIReaderCardPayment5.jsp</title>
         <%if(error==null){%>
         <meta http-equiv="refresh" content="3;url=UIReaderCardPayment5.jsp?complete=1">
         <%}%>

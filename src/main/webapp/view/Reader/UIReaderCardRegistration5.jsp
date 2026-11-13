@@ -1,3 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
 <%@ include file="/WEB-INF/jspf/common.jspf" %>
 <%
 Reader5 reader=(Reader5)session.getAttribute("reader5");
@@ -91,7 +92,7 @@ int selectedReaderId=intValue(request.getParameter("readerType"),selectedReader=
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>ĐĂNG KÝ THẺ ĐỘC GIẢ</title>
+        <title>UIReaderCardRegistration5.jsp</title>
         <link rel="stylesheet" href="<%=base%>/assets/css/style.css">
     </head>
     <body>

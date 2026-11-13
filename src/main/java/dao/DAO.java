@@ -18,11 +18,22 @@ public class DAO {
     }
 
     public static Connection openConnection() throws SQLException {
-        String url = setting("LIBMAN_DB_URL", "jdbc:mariadb://localhost:3306/libman5");
-        String user = setting("LIBMAN_DB_USER", "root");
-        String password = setting("LIBMAN_DB_PASSWORD", "");
-        return DriverManager.getConnection(url, user, password);
+    String url = setting(
+        "LIBMAN_DB_URL",
+        "jdbc:mariadb://localhost:3306/libman5"
+    );
+    String user = setting("LIBMAN_DB_USER", "root");
+    String password = setting("LIBMAN_DB_PASSWORD", "");
+    try {
+        Class.forName("org.mariadb.jdbc.Driver");
+    } catch (ClassNotFoundException error) {
+        throw new SQLException(
+            "Không tìm thấy thư viện MariaDB JDBC Driver",
+            error
+        );
     }
+    return DriverManager.getConnection(url, user, password);
+}
 
     private static String setting(String name, String defaultValue) {
         String value = System.getenv(name);

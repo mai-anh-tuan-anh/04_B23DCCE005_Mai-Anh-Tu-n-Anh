@@ -1,3 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
 <%@ include file="/WEB-INF/jspf/common.jspf" %>
 <%
 ManagementStaff5 manager=(ManagementStaff5)session.getAttribute("managementStaff5");
@@ -74,7 +75,7 @@ int until=Math.min(filtered.size(),first+15);
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>DANH SÁCH LƯỢT MƯỢN CỦA ĐẦU TÀI LIỆU</title>
+        <title>UIDocumentCopyLoanList5.jsp</title>
         <link rel="stylesheet" href="<%=base%>/assets/css/style.css">
     </head>
     <body>

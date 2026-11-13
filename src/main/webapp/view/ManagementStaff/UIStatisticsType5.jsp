@@ -1,3 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
 <%@ include file="/WEB-INF/jspf/common.jspf" %>
 <%
 ManagementStaff5 manager=(ManagementStaff5)session.getAttribute("managementStaff5");
@@ -12,7 +13,7 @@ String base=request.getContextPath();
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>CHỌN LOẠI THỐNG KÊ</title>
+        <title>UIStatisticsType5.jsp</title>
         <link rel="stylesheet" href="<%=base%>/assets/css/style.css">
     </head>
     <body>

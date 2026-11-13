@@ -1,3 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
 <%@ include file="/WEB-INF/jspf/common.jspf" %>
 <%
     request.setCharacterEncoding("UTF-8");
@@ -96,7 +97,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ĐĂNG NHẬP</title>
+    <title>UILogin.jsp</title>
     <link rel="stylesheet" href="<%=request.getContextPath()%>/assets/css/style.css">
 </head>
 <body>
