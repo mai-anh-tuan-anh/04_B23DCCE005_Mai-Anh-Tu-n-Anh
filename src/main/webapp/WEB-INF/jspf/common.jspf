@@ -1,0 +1,42 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="model.*,dao.*,java.util.*,java.time.*,java.time.format.*,java.math.*,java.sql.*,java.net.URLEncoder" %>
+<%!
+    // Tiện ích trình bày JSP, không truy vấn CSDL và không phải DAO.
+    private String h(Object value) {
+        if (value == null) return "";
+        String text = String.valueOf(value);
+        return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+            .replace("\"", "&quot;").replace("'", "&#39;");
+    }
+    private String fmtDate(LocalDate value) {
+        return value == null ? "—" : value.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
+    private String dateInput(LocalDate value) {
+        return value == null ? "" : value.toString();
+    }
+    private String fmtMoney(BigDecimal amount) {
+        return amount == null ? "—" : String.format(new Locale("vi", "VN"), "%,.0f VNĐ", amount);
+    }
+    private int intValue(String raw, int fallback) {
+        try { return Integer.parseInt(raw); } catch (Exception e) { return fallback; }
+    }
+    private String fmtTypes(DocumentTitle5 title) {
+        if (title == null || title.getTitleTypes() == null) return "—";
+        List<String> names = new ArrayList<>();
+        for (TitleType5 t : title.getTitleTypes())
+            if (t != null && t.getDocumentType() != null) names.add(t.getDocumentType().getDocumentTypeName());
+        return names.isEmpty() ? "—" : String.join("; ", names);
+    }
+    private LoanSlip5 loanSlipFor(LoanSlip5[] slips, int loanId) {
+        if (slips == null) return null;
+        for (LoanSlip5 slip : slips) {
+            if (slip.getLoans() == null) continue;
+            for (Loan5 loan : slip.getLoans()) if (loan.getId() == loanId) return slip;
+        }
+        return null;
+    }
+    private String urlText(String s) {
+        try { return URLEncoder.encode(s == null ? "" : s, "UTF-8"); }
+        catch (Exception ignored) { return ""; }
+    }
+%>
